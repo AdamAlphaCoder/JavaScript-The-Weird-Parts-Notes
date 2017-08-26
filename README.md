@@ -479,7 +479,19 @@ attributes:
 - Bind is used when you want to change the reference of this for a function
 - It creates a copy of your function, and whatever object you pass to the bind
 method, becomes the object that the '***this***' keyword points to.
-- Example of use of bind:
+- The ***call*** function also lets you decide what the **this** variable will
+be. The first argument for ***call*** should be what the **this** variable
+should refer to. The rest of the arguments passed to it are the arguments
+that you will normally pass to a function.
+- The difference between the ***bind*** and the ***call*** method is that the
+***call*** method actually executes the method.
+- The ***call*** method and the ***apply*** method perform the same actions,
+but the ***call*** method accepts the arguments directly in the parentheses,
+whereas the ***apply*** method accepts the arguments in an array format.
+- A use for **apply** and **call** would be function borrowing.
+- Function borrowing is used to reduce redundant code, by using functions from
+an object on another object.
+- Example of use of **bind**, **call**, and **apply**:
 
 ```JavaScript
 var person = {
@@ -491,12 +503,53 @@ var person = {
   }
 }
 
-var logName = function() {
+var logName = function(lang1, lang2) {
   console.log('Logged: '+ this.getFullName());
+  console.log('Arguments: ' + lang1 + ' ' + lang2);
+  console.log('-----------');
 };
 
-logName = logName.bind(person);
+var logPersonName = logName.bind(person);
 
-logName();
+logPersonName('en', 'cn');
+
+logName.call(person, 'en', 'es');
+
+logName.apply(person, ['en', 'my']);
+
+// You can also create a function on the fly and invoking it using apply and call
+
+(function(lang1, lang2) {
+  console.log('Logged: '+ this.getFullName());
+  console.log('Arguments: ' + lang1 + ' ' + lang2);
+  console.log('-----------');
+}).call(person, 'en', 'ru');
+
+// function borrowing
+var person2 = {
+  firstName: 'Jane',
+  lastName: 'Doe'
+};
+
+person.getFullName.call(person2, 'en', 'ru');
+
+```
+- Function currying is the act of creating a copy of a function but with some
+preset parameters. This is done by passing additional arguments to the bind
+method.
+
+```JavaScript
+// function currying
+function multiply(a, b) {
+  return a*b;
+}
+
+var multiplyByTwo = multiply.bind(this, 2);
+
+// is actually equals to
+function multiply(b) {
+  var a = 2;
+  return a*b;
+}
 
 ```
