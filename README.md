@@ -467,6 +467,22 @@ function sayHiLater() {
 
 sayHiLater();
 ```
+- But this does not work:
+
+```JavaScript
+function sayHiLater(callback) {
+  var greeting = 'Hi';
+
+  setTimeout(callback, 3000);
+}
+
+sayHiLater(function() {
+  console.log(greeting);
+});
+```
+- This is because the function is actually declared outside the function, and
+since it's parent execution context is not **sayHiLater**, it cannot access
+the variable greeting.
 
 ### Call, Apply, and Bind
 - The Function is just another special kind of object, it has the following
