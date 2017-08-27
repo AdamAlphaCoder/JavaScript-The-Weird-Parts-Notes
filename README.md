@@ -25,6 +25,7 @@ Below is a list of notes made for the course JavaScript: The Weird Parts.
     + [Operator Precedence](#operator-precedence)
     + [Associativity](#associativity)
     + [Coercion](#coercion)
+    + [Short Circuiting](#short-circuiting)
     + [Frameworks](#frameworks)
   * [03. Objects and Functions](#03-objects-and-functions)
     + [Namespace](#namespace)
@@ -178,6 +179,45 @@ right-to-left.
 ### Coercion
 - **Coercion** is converting a value from one data type to another.
 - Also known as type casting.
+
+### Short Circuiting
+- Because logical expressions are evaluated from left to right, they are tested
+for possible '**short-circuit**' evaluation using the following rules:
+  - ***false*** && (anything) is short-circuit evaluated to ***false***
+  - ***true*** || (anything) is short-circuit evaluated to ***true***
+  - If the statement is evaluated to ***true***, the last operand will be
+  executed.
+- An example:
+
+```JavaScript
+3 === 3 && 'cow' && console.log('chicken');
+
+// Chicken will be logged to the console because if the condition is true,
+// the last operand will be executed.
+```
+- This is particularly useful when used in functions, because it allows for
+default parameters.
+
+```JavaScript
+function greet(name) {
+  name && console.log('Hi, ' + name + '!');
+}
+
+greet('Sam');
+```
+- However, you should take note that if you pass in a **falsey** value, such as
+***undefined***, ***null***, or ***0***, the conditional statement will still
+evaluate to false, even if you have passed something in.
+
+```JavaScript
+function plusOne(num) {
+  num = num || 1;
+  return num + 1;
+}
+
+// This statement will return 2, if you pass in a falsey value such as 0
+plusOne(0);
+```
 
 ### Frameworks
 - When you include several JavaScript files inside a HTML file, the browser
