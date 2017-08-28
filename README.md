@@ -39,6 +39,10 @@ Below is a list of notes made for the course JavaScript: The Weird Parts.
     + [Function Factories](#function-factories)
     + [Callback Functions and Closures](#callback-functions-and-closures)
     + [Call, Apply, and Bind](#call--apply--and-bind)
+    + [Functional Programming](#functional-programming)
+  * [05. Object-Oriented JavaScript and Prototypal Inheritance](#05-object-oriented-javascript-and-prototypal-inheritance)
+    + [Prototypal Inheritance](#prototypal-inheritance)
+    + [Reflection and Extend](#reflection-and-extend)
 
 ## 01. Execution Contexts and Lexical Environments
 ### Syntax Parser
@@ -608,4 +612,122 @@ function multiply(b) {
   return a*b;
 }
 
+```
+
+### Functional Programming
+- Functional programming is a programming style where you think and code in
+terms of functions
+- Functional programming languages are languages that have first-class functions
+- Here are the examples of the use of first-class functions:
+
+```JavaScript
+function mapForEach(arr, fn) {
+
+  var newArr = [];
+  for (var i=0; i < arr.length; i++) {
+    newArr.push(
+      fn(arr[i])  
+    );
+  }
+  return newArr;
+}
+
+var arr1 = [1,2,3];
+console.log(arr1);
+
+var arr2 = mapForEach(arr1, function(item) {
+  return item * 2;
+});
+console.log(arr2);
+
+var arr3 = mapForEach(arr1, function(item) {
+  return item > 2;
+});
+console.log(arr3);
+
+var checkPastLimit = function(limiter, item) {
+  return item > limiter;
+}
+
+// When additional arguments to the bind method,
+// a new copy of the method gets created with preset parameters.
+var arr4 = mapForEach(arr1, bindy(checkPastLimit, 1));
+console.log(arr4);
+
+var checkPastLimitSimplified = function(limiter) {
+  return function(limiter, item) {
+    return item > limiter;
+  }.bind(this, limiter);
+};
+
+var arr5 = mapForEach(arr1, checkPastLimitSimplified(2));
+console.log(arr5);
+
+```
+- Instead of just separating your code into functions, first class functions
+allow you to pass functions to your functions, and also return functions
+from your functions.
+- In functional programming, your functions should not mutate data, but instead
+output data from input data.
+
+## 05. Object-Oriented JavaScript and Prototypal Inheritance
+### Prototypal Inheritance
+- ***Inheritance*** is when one object gets access to the properties and
+methods of another object.
+- In prototypal inheritance, each object has its **__proto__** property,
+which contains a **reference** to another object, which is its prototype.
+- The prototype of an object can also have a reference to its very own
+prototype.
+- When you're looking for a property on an object, if it doesn't find the
+property on the object you're specifying, JavaScript will go down the
+prototypal chain until it finds the property specified.
+- All objects in JavaScript have their own prototypes, except for the base
+*Object*.
+- An example would be that each function has the methods **bind**, **call**, and **apply**
+on its on prototype chain.
+- A code example:
+
+```JavaScript
+var getCookies = function() {
+  console.log('I has the cookies');
+}
+
+// Instead of calling getCookies.__proto__.bind(this);
+// We can do this:
+
+getCookies.bind(this);
+
+```
+### Reflection and Extend
+- ***Reflection*** means that an **object** can look at itself, and it can list
+and change its properties and methods.
+
+```JavaScript
+var person = {
+  firstname: 'Default',
+  lastname: 'Default',
+  getFullName: function() {
+    return this.firstname + ' ' + this.lastname;
+  }
+};
+
+var john = {
+  firstname: 'John',
+  lastname: 'Doe'
+};
+
+for (var prop in john) {
+  // To check if the property is actually directly on the object
+  if (john.hasOwnProperty(prop))
+    console.log(prop + ': ' + john[prop]);
+}
+
+var jim = {
+  getFirstName: function() {
+    return firstname;
+  }
+};
+
+// Using Lodash / Underscore JS
+_.extend(john, jim);
 ```
