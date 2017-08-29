@@ -40,16 +40,26 @@ Below is a list of notes made for the course JavaScript: The Weird Parts.
     + [Callback Functions and Closures](#callback-functions-and-closures)
     + [Call, Apply, and Bind](#call--apply--and-bind)
     + [Functional Programming](#functional-programming)
-  * [05. Object-Oriented JavaScript and Prototypal Inheritance](#05-object-oriented-javascript-and-prototypal-inheritance)
+  * [04. Object-Oriented JavaScript and Prototypal Inheritance](#04-object-oriented-javascript-and-prototypal-inheritance)
     + [Prototypal Inheritance](#prototypal-inheritance)
     + [Reflection and Extend](#reflection-and-extend)
+  * [05. Building Objects](#05-building-objects)
+    + [Function Constructors, 'new', and The History of JavaScript](#function-constructors---new---and-the-history-of-javascript)
+    + [Function Constructors and '.prototypes'](#function-constructors-and--prototypes-)
+    + ['new' and Functions](#-new--and-functions)
+    + [Built-in Function Constructors](#built-in-function-constructors)
+    + [Arrays and for ... in](#arrays-and-for--in)
+    + [Object.create and Pure Prototypal Inheritance](#objectcreate-and-pure-prototypal-inheritance)
+    + [ES6 and Classes](#es6-and-classes)
 
 ## 01. Execution Contexts and Lexical Environments
 ### Syntax Parser
-- A program that reads your code and determines what it does, and if the grammar is valid.
+- A program that reads your code and determines what it does, and if the
+grammar is valid.
 
 ### Lexical Environment
-- Where something sits physically in the code you write, the positioning, where is it contained
+- Where something sits physically in the code you write, the positioning, where
+is it contained
 
 ### Execution Context
 - A wrapper to help manage the code that is currently running
@@ -68,7 +78,8 @@ function a() {
 ```
 
 ### Name/Value Pair
-- A name which maps to a unique value, can be defined more than once, but can have only one value in any given context
+- A name which maps to a unique value, can be defined more than once, but can
+have only one value in any given context
 
 ### Object
 - A collection of Name/Value pairs, a function also counts as a value
@@ -77,7 +88,8 @@ function a() {
 
 ### Hoisting
 - Setup memory space for variables and functions
-- Memory space is allocated for functions and variables, but variables are not yet defined. All values in JS are set initially to undefined.
+- Memory space is allocated for functions and variables, but variables are not
+yet defined. All values in JS are set initially to undefined.
 - Avoid using hoisting. Always declared methods and variables before using them.
 
 ### Phases of execution context inside JavaScript
@@ -85,15 +97,18 @@ function a() {
 2. Execution phase
 
 ### JavaScript is single threaded, synchronous execution
-- Means that it can only execute one instruction at a time in the order that it appears.
+- Means that it can only execute one instruction at a time in the order that it
+appears.
 - Asynchronous events are actually handled synchronously.
 
 ### Invocation
 - Running a function, invoking a function
 
 ### Execution Stack
-- When the script is run, the global execution context is created, and is executed.
-- However, if there is another function invocation, it will stop at that line of code, and create and execute the execution context.
+- When the script is run, the global execution context is created, and is
+executed.
+- However, if there is another function invocation, it will stop at that line
+of code, and create and execute the execution context.
 
 ### Variable environment
 - Where the variables live, and how they relate to each other in memory
@@ -102,8 +117,13 @@ function a() {
 - A scope is Where a variable is available in your code, and if it's truly the
 same copy, or a new one.
 - Basically what scope contains what scope/variables
-- If the variable is not found inside the execution context, it will search for the variable inside the outer lexical environment. If it is not found inside the inside the outer lexical environment, then it will go up the scope chain until it finds the variable, or when it reached the global execution context.
-- Note that just because your execution context is on top of another in the scope chain, it does not mean that it the one on the bottom is necessarily its parent.
+- If the variable is not found inside the execution context, it will search for
+the variable inside the outer lexical environment. If it is not found inside
+the inside the outer lexical environment, then it will go up the scope chain
+until it finds the variable, or when it reached the global execution context.
+- Note that just because your execution context is on top of another in the
+scope chain, it does not mean that it the one on the bottom is necessarily its
+parent.
 - An example:
 
 ```JavaScript
@@ -255,8 +275,8 @@ attach additional functions, variables, and even objects to it.
   - ***name***: The name is optional, the function can be anonymous.
   - ***code***: The code inside the function is actually stored inside a code
   variable, this code variable is actually invocable.
-- A function is actually just an object, whose code just happens to be one of the
-properties attached to the object.
+- A function is actually just an object, whose code just happens to be one of
+the properties attached to the object.
 
 ### Expression vs Statement
 - An ***expression*** Is a unit of code that results in a value
@@ -670,11 +690,11 @@ from your functions.
 - In functional programming, your functions should not mutate data, but instead
 output data from input data.
 
-## 05. Object-Oriented JavaScript and Prototypal Inheritance
+## 04. Object-Oriented JavaScript and Prototypal Inheritance
 ### Prototypal Inheritance
 - ***Inheritance*** is when one object gets access to the properties and
 methods of another object.
-- In prototypal inheritance, each object has its **__proto__** property,
+- In prototypal inheritance, each object has its **\__proto__** property,
 which contains a **reference** to another object, which is its prototype.
 - The prototype of an object can also have a reference to its very own
 prototype.
@@ -683,7 +703,8 @@ property on the object you're specifying, JavaScript will go down the
 prototypal chain until it finds the property specified.
 - All objects in JavaScript have their own prototypes, except for the base
 *Object*.
-- An example would be that each function has the methods **bind**, **call**, and **apply**
+- An example would be that each function has the methods **bind**, **call**,
+and **apply**
 on its on prototype chain.
 - A code example:
 
@@ -731,3 +752,185 @@ var jim = {
 // Using Lodash / Underscore JS
 _.extend(john, jim);
 ```
+
+## 05. Building Objects
+### Function Constructors, 'new', and The History of JavaScript
+- A ***function constructor*** is actually just a normal function, that is used
+to construct objects.
+- When you create a new object using a function constructor, the following
+happens:
+  1. The '**new**' keyword creates a new empty object.
+  2. It then binds the '**this**' keyword to that of the new empty object.
+  3. It binds the ***\__proto__*** property of the new object to the prototype
+  property of the function constructor.
+  4. It then executes the code inside the function constructor, which sets
+  the properties of the object.
+  5. As long as the function constructor doesn't explicitly return a value,
+  JavaScript will automatically return the object that was created.
+
+### Function Constructors and '.prototypes'
+- When the function constructor is used, the prototype is already automatically
+set for the object.
+- Other than name and code, all functions in JavaScript have a property called
+***prototype***. Unless the function is used as a function constructor,
+***prototype*** will never be used. (It is only used by the **new** operator).
+- The ***prototype*** property on the function is not the prototype of the
+function (The prototypes of the function are actually accessed using the
+**\__proto__** keyword).
+- Instead, ***prototype*** is actually the prototype of any objects created
+using the function constructor.
+
+```JavaScript
+function Person(firstname, lastname) {
+  console.log(this);
+  this.firstname = firstname;
+  this.lastname = lastname;
+  console.log('This function is invoked.');
+}
+
+Person.prototype.getFullName = function() {
+  return this.firstname + ' ' + this.lastname;
+};
+
+// The 'new' keyword is actually an operator, which is used to actually
+// create a new object, and perform the binding of 'this'
+var john = new Person('John', 'Doe');
+console.log(john);
+
+var jane = new Person('Jane', 'Doe');  
+```
+- When you create an object using the **new** keyword, a new empty object is
+created, it binds the '***this***' keyword to the new object, and it sets the
+***\__proto__*** of the empty object to the ***prototype*** property of the
+function constructor that is called.
+- The ***prototype*** property of function constructors is where the
+***\__proto__*** property of all objects created using the function
+constructors point to.
+- This means that you can add additional functionality to the objects later on,
+all at once since you're adding functionality to the prototype of the objects.
+- Properties are often setup inside the function constructors, because
+properties largely vary from object to object.
+- However, since objects created from the same class have mostly the same
+functionality, we could put functions on the prototype of the function
+constructor, and objects can refer to the function on its prototype.
+
+### 'new' and Functions
+- Function constructors are actually just regular functions.
+- That means that if you forgot to use the ***new*** keyword when creating a
+new object, the function is still syntactically correct, and JavaScript won't
+catch the error.
+- When you try to create a new object without using the ***new*** keyword, the
+function constructor will return ***undefined***. Hence, an error will be
+thrown when you try to access the uncreated object.
+- As a rule of thumb, any function that is intended to be used as a function
+constructor, should start with a capital letter.
+
+### Built-in Function Constructors
+- An example built-in function constructors are:
+
+```JavaScript
+var a = new Number('3');
+
+var b = new String('John');
+
+'John'.length;
+// is equal to
+var c = new String('John');
+c.length;
+```
+- We could also add new functions to existing objects in JavaScript:
+
+```JavaScript
+String.prototype.isLengthGreaterThan = function(limit) {
+  // If this is called inside a string object, it would be pointing at your
+  // String object. JavaScript takes care of this by going down the prototype
+  // chain.
+  return this.lengthh > limit;
+};
+
+console.log('John'.isLengthGreaterThan(2));
+
+Number.prototype.isPositive = function() {
+  return this > 0;
+}
+```
+- Built-in functions constructors especially for primitive data types are
+dangerous.
+- When using built-in function constructors for creating primitives, actual
+primitives are not created. Hence, when strict comparison happens a primitive
+and a primitive created using a built-in function constructor, the two values
+will not be the same.
+- Moment.js is useful for manipulating dates in JavaScript
+
+### Arrays and for ... in
+- An array in JavaScript is actually an object.
+- Whenever you're adding additional functionality to a built-in functionality
+constructor, when you use for ... in, the additional functionality
+gets triggered even if it was not explicitly called.
+- This is because the for ... in gets every property in the object, regardless
+if it is directly on the object itself, or on the prototype of the object.
+
+```JavaScript
+Array.prototype.myCustomFeature = 'cool';
+
+var arr = ['John', 'Jane', 'Jim'];
+
+// avoid this
+for (var prop in arr) {
+  console.log(prop + ': ' + arr[prop]);
+}
+
+//use this instead
+for (var i=0; i < arr.length; i++) {
+  console.log(arr[i]);
+}
+```
+
+### Object.create and Pure Prototypal Inheritance
+- Object.create is a newer way to create objects, using pure prototypal
+inheritance concepts.
+- With Object.create, you create a new empty object, and the object that you
+have passed in becomes your prototype.
+- If you do not use '***this***' to refer to properties inside the object,
+JavaScript will not be able to locate the property that you want, since the
+creation of the object does not actually create a new execution context.
+- With this pattern, you simply override whatever you need to by simply adding
+the properties or methods to your created object.
+- A ***polyfill*** is code that adds a feature which the engine *may* lack.
+
+```JavaScript
+// polyfill
+if(!Object.create) {
+  Object.create = function (o) {
+    if (arguments.length > 1) {
+      throw new Error('Object.create implementation'
+      + ' only accepts the first parameter.');
+    }
+    function F() {};
+      F.prototype = o;
+      return new F();
+  };
+}
+
+var person = {
+  firstname: 'Default',
+  lastname: 'Default',
+  greet: function() {
+    return 'Hi ' + this.firstname;
+  }
+};
+
+// Object.create is just used to create others of person
+var john = Object.create(person);
+john.firstname = 'John';
+john.lastname = 'Doe';
+console.log(john);
+```
+
+### ES6 and Classes
+- Classes in JavaScript are actually objects. When you create a new object from
+a class in JavaScript, you're actually creating an object from an object.
+- The ***extends*** keyword in JavaScript is actually just used to set the
+prototype of an object to another object.
+- ***Syntactic Sugar*** is just a different way to type something that doesn't
+change how it works under the hood.
