@@ -634,6 +634,23 @@ function multiply(b) {
 
 ```
 
+```JavaScript
+function multiply(a, b, c) {
+  return a * b * c;
+}
+
+function curriedMultiply(a) {
+    return function (b) {
+      return function (c) {
+        return a * b * c;
+      }
+    }
+}
+
+console.log(multiply(5, 10, 3));
+console.log(curriedMultiply(5)(10)(3));
+```
+
 ### Functional Programming
 - Functional programming is a programming style where you think and code in
 terms of functions
